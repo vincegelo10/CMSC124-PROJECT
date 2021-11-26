@@ -1,0 +1,15 @@
+HAI		BTW this is a comment
+	I HAS A x BTW HELLO WORLD!
+	I HAS A y
+	I HAS A s
+	GIMMEH x 	
+	GIMMEH y
+	x IS NOW A NUMBR	
+	y IS NOW A NUMBR
+	s R SUM OF x AN Y
+	VISIBLE s
+	OBTW 
+		this is a 
+		multi line comment!
+	TLDR
+KTHXBYE
