@@ -2,20 +2,20 @@ import re
 
 def lexicalAnalysis():
 	
-	I_HAS_A = ""		#done
-	IS_NOW_A = ""		#done	
-	SUM_OF = ""			#done
-	DIFF_OF = ""		#done
-	PRODUKT_OF = ""		#done
-	QUOSHUNT_OF = ""	#done
-	MOD_OF = ""			#done
-	BIGGR_OF = ""		#done
-	SMALLR_OF = ""		#done
-	BOTH_OF = ""		#done
-	EITHER_OF = ""		#done
-	WON_OF = ""			#done
-	ANY_OF = ""			#done
-	ALL_OF = ""			#done
+	I_HAS_A = ""		
+	IS_NOW_A = ""		
+	SUM_OF = ""			
+	DIFF_OF = ""		
+	PRODUKT_OF = ""		
+	QUOSHUNT_OF = ""	
+	MOD_OF = ""			
+	BIGGR_OF = ""		
+	SMALLR_OF = ""		
+	BOTH_OF = ""		
+	EITHER_OF = ""		
+	WON_OF = ""			
+	ANY_OF = ""			
+	ALL_OF = ""			
 	BOTH_SAEM = ""
 	O_RLY = ""
 	YA_RLY = ""
