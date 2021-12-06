@@ -1,4 +1,3 @@
-from variables import *
 import re 
 
 classified_lexemes = []
