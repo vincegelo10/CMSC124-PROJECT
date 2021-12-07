@@ -64,17 +64,18 @@ def lexicalAnalysis():
 					classified_lexemes.append({"token": token, "type": "Else-if condition"})
 				elif re.search("^AN$", token):
 					classified_lexemes.append({"token": token, "type": "Operand Separator"})
-				elif re.search("^OIC$", token):					#check for if-else or loops
+				elif re.search("^OIC$", token):					#check for if-else or delimeter
 					if if_else:
 						classified_lexemes.append({"token": token, "type": "If-then delimeter"})
 						if_else = False
 					elif switch_case:
-						classified_lexemes.append({"token": token, "type": "Loop delimeter"})
+						classified_lexemes.append({"token": token, "type": "Switch-case delimeter"})
 						switch_case = False
 				elif re.search("^WTF?$", token):
 					classified_lexemes.append({"token": token, "type": "Switch-case delimeter"})
 					switch_case = True
-				elif re.search("^OMG$", token):					classified_lexemes.append({"token": token, "type": "Switch-case condition"})
+				elif re.search("^OMG$", token):					
+					classified_lexemes.append({"token": token, "type": "Switch-case condition"})
 				elif re.search("^OMGWTF$", token):
 					classified_lexemes.append({"token": token, "type": "Switch-case default condition"})
 				elif re.search("^UPPIN$",token):
@@ -99,8 +100,12 @@ def lexicalAnalysis():
 				elif re.search("^YR$",token):
 					if IM_IN_YR:
 						IM_IN_YR = IM_IN_YR + " YR"
+						classified_lexemes.append({"token": IM_IN_YR, "type": "Loop delimeter"})
+						IM_IN_YR = ""
 					elif IM_OUTTA_YR:
 						IM_OUTTA_YR = IM_OUTTA_YR + " YR"
+						classified_lexemes.append({"token": IM_OUTTA_YR, "type": "Loop delimeter"})
+						IM_OUTTA_YR = ""
 				elif re.search("^OUTTA$",token):
 					if IM_OUTTA_YR:
 						IM_OUTTA_YR = IM_OUTTA_YR + " OUTTA"
@@ -127,7 +132,6 @@ def lexicalAnalysis():
 						NO_WAI = NO_WAI + " WAI"
 						classified_lexemes.append({"token": NO_WAI, "type": "Else statement"})
 						NO_WAI = ""
-
 				elif re.search("^I$", token):
 					I_HAS_A = token
 				elif re.search("^HAS$", token):
@@ -244,9 +248,10 @@ def lexicalAnalysis():
 			elif isString:
 				if re.search('^[^"]*"$',token):
 					YARN = YARN + " " + token
-					classified_lexemes.append({"token": YARN, "type": "YARN"})
-					YARN = ""
+					if not re.search('^" +"$',YARN):
+						classified_lexemes.append({"token": YARN, "type": "YARN"})
 					isString = False
+					YARN = ""
 				else:
 					YARN = YARN + " " + token
 			elif singlelinecomment:
@@ -262,8 +267,29 @@ def lexicalAnalysis():
 		singlelinecomment = False
 
 	fileHandle.close()
+
+def classifyIdentifiers():
+	for i in range(0,len(classified_lexemes)):
+		if classified_lexemes[i]["type"] == "Identifier":
+			if classified_lexemes[i-1]["type"] == "Variable Declaration":
+				classified_lexemes[i]["type"] == "Variable identifier"
+				for j in range(i+1,len(classified_lexemes)):
+					if classified_lexemes[i]["token"] == classified_lexemes[j]["token"]:
+						classified_lexemes[j]["type"] = "Variable identifier"
+			elif classified_lexemes[i-1]["type"] == "Loop delimeter":
+				classified_lexemes[i]["type"] == "Loop identifier"
+				for j in range(i+1,len(classified_lexemes)):
+					if classified_lexemes[i]["token"] == classified_lexemes[j]["token"]:
+						classified_lexemes[j]["type"] = "Loop identifier"
+
+def printLexemes():
+	print("----------LEXEMES----------")
+	for i in range(0, len(classified_lexemes)):
+		print(classified_lexemes[i]["token"]+": "+classified_lexemes[i]["type"])
+
+
 lexicalAnalysis()
-print("----------LEXEMES----------")
-for i in range(0, len(classified_lexemes)):
-	print(classified_lexemes[i]["token"]+": "+classified_lexemes[i]["type"])
+classifyIdentifiers()
+printLexemes()
+
 
