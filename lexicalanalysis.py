@@ -1,5 +1,12 @@
 import re 
 
+class lex:
+    def __init__(self,token,type):
+        self.token = token
+        self.type = type
+    def printLex(self):
+        print(self.token+" : "+self.type)
+
 classified_lexemes = []
 
 #HERE ARE THE LEXEMES WITH SPACES
@@ -27,7 +34,6 @@ def lexicalAnalysis():
 	multilinecomment = False
 	isString = False
 	lexeme_with_space = False
-	#Error = False
 	
 	LEXEMES_SPACES2 = []
 
@@ -42,115 +48,112 @@ def lexicalAnalysis():
 		line = line.split()
 		lexeme = ""
 		YARN = ""
-		line_count +=1
+		line_count += 1
+		lexeme_in_line = []
 		for token in line:
 			if not singlelinecomment and not multilinecomment and not lexeme_with_space and not isString:
 				if re.search("^HAI$",token):
-					classified_lexemes.append({"token": token, "type": "Code delimeter"})
+					lexeme_in_line.append(lex(token,"Code delimiter"))
 				elif re.search("^KTHXBYE$", token):
-					classified_lexemes.append({"token": token, "type": "Code delimeter"})
+					lexeme_in_line.append(lex(token,"Code delimiter"))
 				elif re.search("^ITZ$", token):
-					classified_lexemes.append({"token": token, "type": "Variable Initializaton"})
+					lexeme_in_line.append(lex(token,"Variable Initialization"))
 				elif re.search("^R$", token):
-					classified_lexemes.append({"token": token, "type": "Variable assignment"})
+					lexeme_in_line.append(lex(token,"Variable assignment"))
 				elif re.search("^NOT$", token):
-					classified_lexemes.append({"token": token, "type": "Negation"})
+					lexeme_in_line.append(lex(token,"Negation"))
 				elif re.search("^DIFFRINT$", token):
-					classified_lexemes.append({"token": token, "type": "Comparison Op"})
+					lexeme_in_line.append(lex(token,"Comparison Op"))
 				elif re.search("^SMOOSH$", token):
-					classified_lexemes.append({"token": token, "type": "Concatenation"})
+					lexeme_in_line.append(lex(token,"Concatenation"))
 				elif re.search("^MAEK$", token):
-					classified_lexemes.append({"token": token, "type": "Typecast"})
+					lexeme_in_line.append(lex(token,"Typecast"))
 				elif re.search("^VISIBLE$", token):
-					classified_lexemes.append({"token": token, "type": "Print"})
+					lexeme_in_line.append(lex(token,"Print"))
 				elif re.search("^MEBBE$", token):
-					classified_lexemes.append({"token": token, "type": "Else-if condition"})
+					lexeme_in_line.append(lex(token,"Else-if condition"))
 				elif re.search("^AN$", token):
-					classified_lexemes.append({"token": token, "type": "Operand Separator"})
+					lexeme_in_line.append(lex(token,"Operand Separator"))
 				elif re.search("^OIC$", token):					
 					if if_else:
-						classified_lexemes.append({"token": token, "type": "If-then delimeter"})
+						lexeme_in_line.append(lex(token,"If-then delimiter"))
 						if_else = False
 					elif switch_case:
-						classified_lexemes.append({"token": token, "type": "Switch-case delimeter"})
+						lexeme_in_line.append(lex(token,"Switch-case delimiter"))
 						switch_case = False
 				elif re.search("^WTF?$", token):
-					classified_lexemes.append({"token": token, "type": "Switch-case delimeter"})
+					lexeme_in_line.append(lex(token,"Switch-case delimiter"))
 					switch_case = True
 				elif re.search("^OMG$", token):					
-					classified_lexemes.append({"token": token, "type": "Switch-case condition"})
+					lexeme_in_line.append(lex(token,"Switch-case condition"))
 				elif re.search("^OMGWTF$", token):
-					classified_lexemes.append({"token": token, "type": "Switch-case default condition"})
+					lexeme_in_line.append(lex(token,"Switch-case default condition"))
 				elif re.search("^UPPIN$",token):
-					classified_lexemes.append({"token": token, "type": "Loop Increment"})
+					lexeme_in_line.append(lex(token,"Loop Increment"))
 				elif re.search("^NERFIN$",token):
-					classified_lexemes.append({"token": token, "type": "Loop decrement"})
+					lexeme_in_line.append(lex(token,"Loop Decrement"))
 				elif re.search("^TIL$",token):
-					classified_lexemes.append({"token": token, "type": "Loop Condition"})
+					lexeme_in_line.append(lex(token,"Loop Condition"))
 				elif re.search("^WILE$",token):
-					classified_lexemes.append({"token": token, "type": "Loop Condition"})
+					lexeme_in_line.append(lex(token,"Loop Condition"))
 				elif re.search("^GIMMEH$",token):
-					classified_lexemes.append({"token": token, "type": "Input"})
-				elif re.search("^A$",token):
-					classified_lexemes.append({"token": token, "type":"A"})
+					lexeme_in_line.append(lex(token,"Input"))
 				elif re.search("^(WIN|FAIL)$", token):
-					classified_lexemes.append({"token": token, "type": "Troof"})
+					lexeme_in_line.append(lex(token,"Troof"))
 				elif re.search("^(TROOF|NOOB|NUMBR|NUMBAR|YARN|TYPE)$",token):
-					classified_lexemes.append({"token": token, "type": "Type Literal"})
+					lexeme_in_line.append(lex(token,"Type Literal"))
 				elif re.search("^BTW$", token):
-					classified_lexemes.append({"token": token, "type": "Single-line comment delimeter"})
+					lexeme_in_line.append(lex(token,"Single-line comment delimiter"))
 					singlelinecomment = True
 				elif re.search("^OBTW$", token):
-					classified_lexemes.append({"token": token, "type": "Multi-line comment delimeter"})
+					lexeme_in_line.append(lex(token,"Multi-line comment delimiter"))
 					multilinecomment = True
 				elif token in LEXEMES_SPACES2:
 					lexeme = token
 					lexeme_with_space = True
 				elif re.search("^-?[0-9]+$", token):
-					classified_lexemes.append({"token": token, "type": "NUMBR"})
+					lexeme_in_line.append(lex(token,"NUMBR"))
 				elif re.search("^-?[0-9]+\.[0-9]+$",token):
-					classified_lexemes.append({"token": token, "type": "NUMBAR"})
+					lexeme_in_line.append(lex(token,"NUMBAR"))
 				elif re.search('^"[^"]+"$',token):
-					classified_lexemes.append({"token": token, "type": "YARN"})
+					lexeme_in_line.append(lex(token,"YARN"))
 				elif re.search('^"[^"]*$',token):
 					YARN = YARN + token
 					isString = True
 				elif re.search("^[A-Za-z][A-Za-z0-9_]*$", token):
-					classified_lexemes.append({"token": token, "type": "Identifier"})
-
+						lexeme_in_line.append(lex(token,"Identifier"))
+				
 			elif lexeme_with_space:
 				lexeme = lexeme + " " + token
 				if lexeme in LEXEMES_SPACES:
 					if lexeme in ARITHMETIC_OP:
-						classified_lexemes.append({"token": lexeme, "type": "Arithmetic Op"})
+						lexeme_in_line.append(lex(lexeme,"Arithmetic Op"))
 						lexeme = ""
 					elif lexeme in BOOLEAN_OP:
-						classified_lexemes.append({"token": lexeme, "type": "Boolean Op"})
+						lexeme_in_line.append(lex(lexeme,"Boolean Op"))
 						lexeme = ""
 					elif lexeme in COMPARISON_OP:
-						classified_lexemes.append({"token": lexeme, "type": "Comparison Op"})
+						lexeme_in_line.append(lex(lexeme,"Comparison Op"))
 						lexeme = ""
 					elif lexeme in VARIABLE_DECLARATION:
-						classified_lexemes.append({"token": lexeme, "type": "Variable declaration"})
+						lexeme_in_line.append(lex(lexeme,"Variable declaration"))
 						lexeme = ""
-						expecting_identifier = True
 					elif lexeme in TYPECAST:
-						classified_lexemes.append({"token": lexeme, "type": "Typecast"})
+						lexeme_in_line.append(lex(lexeme,"Typecast"))
 						lexeme = ""
 					elif lexeme in LOOP_DELIM:
-						classified_lexemes.append({"token": lexeme, "type": "Loop delimeter"})
+						lexeme_in_line.append(lex(lexeme,"Loop delimiter"))
 						lexeme = ""
-						expecting_identifier = True
 					elif lexeme in IF_THEN_LEXEMES:
 						if lexeme == IF_STATEMENT_DELIM:
-							classified_lexemes.append({"token": lexeme, "type": "If statement delimeter"})
+							lexeme_in_line.append(lex(lexeme,"If statement delimiter"))
 							if_else = True
 							lexeme = ""
 						elif lexeme == IF_STATEMENT:
-							classified_lexemes.append({"token": lexeme, "type": "If statement"})
+							lexeme_in_line.append(lex(lexeme,"If statement"))
 							lexeme = ""
 						elif lexeme == ELSE_STATEMENT:
-							classified_lexemes.append({"token": lexeme, "type": "Else statement"})
+							lexeme_in_line.append(lex(lexeme,"Else statement"))
 							lexeme = ""
 					lexeme_with_space = False
 	
@@ -158,20 +161,21 @@ def lexicalAnalysis():
 				if re.search('^[^"]*"$',token):
 					YARN = YARN + " " + token
 					if not re.search('^" +"$',YARN):
-						classified_lexemes.append({"token": YARN, "type": "YARN"})
+						lexeme_in_line.append(lex(YARN,"YARN"))
 					isString = False
 					YARN = ""
 				else:
 					YARN = YARN + " " + token
 			elif singlelinecomment:
-				classified_lexemes.append({"token": token, "type": "Single-line comment word"})
+				lexeme_in_line.append(lex(token,"Single-line comment word"))
 				
 			elif multilinecomment:
 				if re.search("^TLDR$", token):
-					classified_lexemes.append({"token": token, "type": "Multi-line comment delimeter"})
+					lexeme_in_line.append(lex(token,"Multi-line comment delimiter"))
 					multilinecomment = False
 				else:
-					classified_lexemes.append({"token": token, "type": "Multi-line comment word"})
+					lexeme_in_line.append(lex(token,"Multi-line comment word"))
+
 
 		singlelinecomment = False
 
@@ -181,6 +185,10 @@ def lexicalAnalysis():
 			LEXICAL_ANALYSIS_ERROR = True
 			break
 
+		if len(lexeme_in_line) == 0:
+			continue
+		else:
+			classified_lexemes.append(lexeme_in_line)
 	fileHandle.close()
 
 def classifyIdentifiers():
@@ -188,43 +196,39 @@ def classifyIdentifiers():
 	global LEXICAL_ANALYSIS_ERROR
 
 	for i in range(0,len(classified_lexemes)):
-		if classified_lexemes[i]["type"] == "Identifier":
-			if classified_lexemes[i-1]["type"] == "Variable declaration":
-				classified_lexemes[i]["type"] = "Variable identifier"
-				for j in range(i+1,len(classified_lexemes)):
-					if classified_lexemes[i]["token"] == classified_lexemes[j]["token"]:
-						classified_lexemes[j]["type"] = "Variable identifier"
-			elif classified_lexemes[i-1]["type"] == "Loop delimeter":
-				classified_lexemes[i]["type"] = "Loop identifier"
-				for j in range(i+1,len(classified_lexemes)):
-					if classified_lexemes[i]["token"] == classified_lexemes[j]["token"]:
-						classified_lexemes[j]["type"] = "Loop identifier"
-			else:
-				if classified_lexemes[i]["token"] == "IT":
-					classified_lexemes[i]["type"] = "Implicit variable"
-				else:
-					print("Lexical Analysis Error")
-					print("Error on: ",classified_lexemes[i]["token"])
-					LEXICAL_ANALYSIS_ERROR = True
-				break
+		for j in range(0,len(classified_lexemes[i])):
+			if classified_lexemes[i][j].type == "Identifier":
+					if classified_lexemes[i][j-1].type == "Variable declaration":
+						classified_lexemes[i][j].type = "Variable identifier"
+					elif classified_lexemes[i][j-1].type == "Loop delimeter":
+						classified_lexemes[i][j].type= "Loop identifier"
+					else:
+						if classified_lexemes[i][j].token == "IT":
+							classified_lexemes[i][j].type = "Implicit variable"
+						else:
+							print("Error on: ",classified_lexemes[i][j].token,"not recognized")
+							LEXICAL_ANALYSIS_ERROR = True
+
+					current_variable = classified_lexemes[i][j].token
+					current_variable_type = classified_lexemes[i][j].type 
+
+					if current_variable != "IT":
+						for line in classified_lexemes:
+							for lexeme in line:
+								if current_variable == lexeme.token:
+									lexeme.type = current_variable_type
+
+				
 
 def printLexemes():
 	print("----------LEXEMES----------")
-	for i in range(0, len(classified_lexemes)):
-		print(classified_lexemes[i]["token"]+": "+classified_lexemes[i]["type"])
+	for line in classified_lexemes:
+		for lexeme in line:
+			lexeme.printLex()
+		
 
 lexicalAnalysis()
 classifyIdentifiers()
 
 if not LEXICAL_ANALYSIS_ERROR:
-	print(LEXICAL_ANALYSIS_ERROR)
 	printLexemes()
-
-
-#for consultation tomo
-#it variable implemented sa semantic analysis?
-#parang wala naman pong functions identifiers na nasa handout, so safe to assume na loop and variable identifiers nalang
-#errors on lexical analysis
-#better implementation for comments: word by word or isang buong lexeme for the whole content of the comment?
-#present idea for syntax analysis
-
