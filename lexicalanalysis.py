@@ -15,8 +15,11 @@ IF_STATEMENT = "YA RLY"
 ELSE_STATEMENT = "NO WAI"
 LOOP_DELIM = ["IM IN YR","IM OUTTA YR"]
 
+LEXICAL_ANALYSIS_ERROR = False
 
 def lexicalAnalysis():
+
+	global LEXICAL_ANALYSIS_ERROR
 	
 	if_else = False
 	switch_case = False
@@ -24,23 +27,22 @@ def lexicalAnalysis():
 	multilinecomment = False
 	isString = False
 	lexeme_with_space = False
-	expecting_identifier = False
-	Error = False
+	#Error = False
 	
 	LEXEMES_SPACES2 = []
-	VARIABLE_IDENTIFIERS = []
 
 	for lexeme in LEXEMES_SPACES:
 		lexeme = lexeme.split()
 		for token in lexeme:
 			LEXEMES_SPACES2.append(token)
 
-
-	fileHandle = open("sample.txt",'r')
+	line_count = 0
+	fileHandle = open("arith.lol",'r')
 	for line in fileHandle:
 		line = line.split()
 		lexeme = ""
 		YARN = ""
+		line_count +=1
 		for token in line:
 			if not singlelinecomment and not multilinecomment and not lexeme_with_space and not isString:
 				if re.search("^HAI$",token):
@@ -89,6 +91,8 @@ def lexicalAnalysis():
 					classified_lexemes.append({"token": token, "type": "Loop Condition"})
 				elif re.search("^GIMMEH$",token):
 					classified_lexemes.append({"token": token, "type": "Input"})
+				elif re.search("^A$",token):
+					classified_lexemes.append({"token": token, "type":"A"})
 				elif re.search("^(WIN|FAIL)$", token):
 					classified_lexemes.append({"token": token, "type": "Troof"})
 				elif re.search("^(TROOF|NOOB|NUMBR|NUMBAR|YARN|TYPE)$",token):
@@ -111,17 +115,9 @@ def lexicalAnalysis():
 				elif re.search('^"[^"]*$',token):
 					YARN = YARN + token
 					isString = True
-				elif expecting_identifier:
-					if re.search("^[A-Za-z][A-Za-z0-9_]*$", token):
-						classified_lexemes.append({"token": token, "type": "Identifier"})
-						VARIABLE_IDENTIFIERS.append(token)
-						expecting_identifier = False
-				elif token in VARIABLE_IDENTIFIERS:
+				elif re.search("^[A-Za-z][A-Za-z0-9_]*$", token):
 					classified_lexemes.append({"token": token, "type": "Identifier"})
-				else:
-					Error = True
-					print("Error on: ",token)
-					break
+
 			elif lexeme_with_space:
 				lexeme = lexeme + " " + token
 				if lexeme in LEXEMES_SPACES:
@@ -180,14 +176,17 @@ def lexicalAnalysis():
 		singlelinecomment = False
 
 		if len(lexeme) !=0:
-			print("Error on: ", lexeme)
-			break
-		if Error:
+			print("Lexical Analysis Error")
+			print("Error on line ",line_count," at ", lexeme)
+			LEXICAL_ANALYSIS_ERROR = True
 			break
 
 	fileHandle.close()
 
 def classifyIdentifiers():
+
+	global LEXICAL_ANALYSIS_ERROR
+
 	for i in range(0,len(classified_lexemes)):
 		if classified_lexemes[i]["type"] == "Identifier":
 			if classified_lexemes[i-1]["type"] == "Variable declaration":
@@ -200,15 +199,32 @@ def classifyIdentifiers():
 				for j in range(i+1,len(classified_lexemes)):
 					if classified_lexemes[i]["token"] == classified_lexemes[j]["token"]:
 						classified_lexemes[j]["type"] = "Loop identifier"
+			else:
+				if classified_lexemes[i]["token"] == "IT":
+					classified_lexemes[i]["type"] = "Implicit variable"
+				else:
+					print("Lexical Analysis Error")
+					print("Error on: ",classified_lexemes[i]["token"])
+					LEXICAL_ANALYSIS_ERROR = True
+				break
 
 def printLexemes():
 	print("----------LEXEMES----------")
 	for i in range(0, len(classified_lexemes)):
 		print(classified_lexemes[i]["token"]+": "+classified_lexemes[i]["type"])
 
-
 lexicalAnalysis()
 classifyIdentifiers()
-printLexemes()
 
+if not LEXICAL_ANALYSIS_ERROR:
+	print(LEXICAL_ANALYSIS_ERROR)
+	printLexemes()
+
+
+#for consultation tomo
+#it variable implemented sa semantic analysis?
+#parang wala naman pong functions identifiers na nasa handout, so safe to assume na loop and variable identifiers nalang
+#errors on lexical analysis
+#better implementation for comments: word by word or isang buong lexeme for the whole content of the comment?
+#present idea for syntax analysis
 
